@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+import colorsys, sys
+import numpy as np
+import matplotlib.pyplot as plt
+
+def set_bar_style(bars, xs, hsl_func, alpha=.7):
+    for xs, bar in zip(xs, bars):
+        avg = xs + .5 / len(bars)
+        color = colorsys.hls_to_rgb(*hsl_func(avg))
+        bar.set_facecolor(color)
+        bar.set_linewidth(0)
+        bar.set_alpha(alpha)
+
+def plot_steps(ax, xs, ys, *args, **kwargs):
+    step_xs = np.dstack((xs, xs + xs[1] - xs[0])).flatten()
+    ax.plot(step_xs, ys.repeat(2), *args, **kwargs)
+
+def plot_hue(hsl_dist, ax):
+    # be sure to exclude the last column (which is for hue=NaN)
+    dist = hsl_dist.sum(axis=(1, 2))[:-1]
+
+    # bin the data in groups of bin_size
+    # note that we use radians here because matplotlib expects that
+    bin_size = 2
+    binned_dist = dist.reshape(-1, bin_size).mean(axis=1)
+    hues = np.linspace(0, 2 * np.pi, len(binned_dist), endpoint=False)
+    binwidth = 2 * np.pi / len(binned_dist)
+
+    # render polar plot with colors :3
+    bars = ax.bar(hues, binned_dist, width=binwidth)
+    set_bar_style(bars, hues / (2 * np.pi), lambda x: (x, .4, .9))
+    plot_steps(ax, hues, binned_dist, color=(0., 0., 0., .2))
+    ax.get_yaxis().set_ticklabels([])
+    ax.set_xlabel("hue")
+
+def plot_saturation(hsl_dist, ax):
+    # be sure to exclude the last column (which is for saturation=NaN)
+    dist = hsl_dist.sum(axis=(0, 2))[:-1]
+
+    # bin the data in groups of bin_size
+    bin_size = 4
+    binned_dist = dist.reshape(-1, bin_size).mean(axis=1)
+    saturations = np.linspace(0, 1, len(binned_dist), endpoint=False)
+    binwidth = 1. / len(binned_dist)
+
+    # render plot with colors :3
+    bars = ax.bar(saturations, binned_dist, width=binwidth)
+    set_bar_style(bars, saturations, lambda x: (0., .5, x))
+    plot_steps(ax, saturations, binned_dist, color=(0., 0., 0., .2))
+    ax.get_yaxis().set_ticklabels([])
+    ax.set_xlabel("saturation")
+
+def plot_lightness(hsl_dist, ax):
+    dist = hsl_dist.sum(axis=(0, 1))
+
+    # bin the data in groups of bin_size
+    bin_size = 4
+    binned_dist = dist.reshape(-1, bin_size).mean(axis=1)
+    lightnesses = np.linspace(0, 1, len(binned_dist), endpoint=False)
+    binwidth = 1. / len(binned_dist)
+
+    # render plot with colors :3
+    bars = ax.bar(lightnesses, binned_dist, width=binwidth)
+    set_bar_style(bars, lightnesses, lambda x: (0., x, 0.), alpha=.9)
+    plot_steps(ax, lightnesses, binned_dist, color=(0., 0., 0., .2))
+    ax.get_yaxis().set_ticklabels([])
+    ax.set_xlabel("lightness")
+
+def load_hsl_dist(filename):
+    """The file is stored as an array of H * S * B int64 values.
+    The 360-th value of H and 256-th value of S denote NaN."""
+    return (np.fromfile(filename, dtype=int).reshape((361, 257, 256)))
+
+hsl_data_filename = sys.argv[1]
+hsl_dist = load_hsl_dist(hsl_data_filename)
+plot_hue(hsl_dist, plt.subplots(subplot_kw={"projection": "polar"})[1])
+plot_saturation(hsl_dist, plt.subplots()[1])
+plot_lightness(hsl_dist, plt.subplots()[1])
+plt.show()
