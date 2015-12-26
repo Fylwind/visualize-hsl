@@ -9,10 +9,18 @@ Converts an input array in NumPy format into a raw binary file composed of
 
 Converts an RGB distribution into an HSL distribution.
 
+To build the tool, run:
+
+~~~sh
+make rgb2hsl
+~~~
+
 The input file is a raw binary file containing a 256 × 256 × 256 array of RGB
 frequencies (with B being the fastest index):
 
-    int64_t rgb_dist[256][256][256];
+~~~c
+int64_t rgb_dist[256][256][256];
+~~~
 
 As a distribution, the value of `rgb_dist[r][g][b]` indicates the number of
 occurrences (frequency) of the color `(r, g, b)`.
@@ -20,7 +28,9 @@ occurrences (frequency) of the color `(r, g, b)`.
 The output file is a raw binary file containing a 361 × 257 × 256 array of HSL
 frequencies (with L being the fastest index):
 
-    int64_t hsl_dist[361][257][256];
+~~~c
+int64_t hsl_dist[361][257][256];
+~~~
 
 As a distribution, the value of `hsl_dist[h][s][l]` indicates the number of
 occurrences (frequency) of the color `(h, s, l)`.
@@ -52,7 +62,11 @@ them:
   - Averaged RGB value for every pixel.
   - Distribution of hue, saturation, and lightness respectively.
 
-To build the tool, run `make loadpngs`.
+To build the tool, run:
+
+~~~sh
+make loadpngs
+~~~
 
 As example, suppose you want to gather statistics on 3 images of size 800×600:
 `input1.png`, `input2.png`, and `input3.png`.  To do this first run the
