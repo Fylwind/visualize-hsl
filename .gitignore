@@ -1,5 +1,7 @@
+loadpngs
 rgb2hsl
 *.dat
+*.png
 *.npy
 
 # generic
