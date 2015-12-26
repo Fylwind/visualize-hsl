@@ -87,6 +87,6 @@ After gathering the statistics, we distill the data via:
 ./loadpngs out 800 600 stats.dat avg_rgb.png hsl_dist.dat
 ~~~
 
-This creates `avg_rgb.png`, which is the shows the average RGB values as an
-image, as well as `hsl_dist.dat`, which contains the HSL distribution and can
-be visualized via `./plot_hsl hsl_dist.dat`.
+This creates `avg_rgb.png`, which is shows the average RGB values as an image,
+as well as `hsl_dist.dat`, which contains the HSL distribution that can be
+visualized via `./plot_hsl hsl_dist.dat`.
