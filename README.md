@@ -1,5 +1,12 @@
 # Visualizing HSL color distributions
 
+## Prerequisites
+
+  - libpng
+  - python
+  - python-numpy
+  - python-matplotlib
+
 ## npy2dat
 
 Converts an input array in NumPy format into a raw binary file composed of
@@ -78,8 +85,9 @@ following command:
 
 This will create a file called `stats.dat` that tracks the statistics.  You
 can call this command as many times as you like with a pre-existing
-`stats.dat` to add more images.  (Note that if you add the same image multiple
-times, then it will be weighted higher!)
+`stats.dat` to add more images (i.e. `stats.dat` is **not** overwritten, but
+amended).  If you add the same image over and over, then it will be weighted
+higher and higher!
 
 After gathering the statistics, we distill the data via:
 
