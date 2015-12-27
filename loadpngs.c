@@ -81,6 +81,10 @@ png_bytepp read_png(size_t *width, size_t *height,
     info = png_create_info_struct(png);
     RF_X(!info);
 
+    if (setjmp(png_jmpbuf(png))) {
+        exit(1);
+    }
+
     png_init_io(png, file);
     png_read_info(png, info);
     normalize_png(png, info);
@@ -115,6 +119,10 @@ void write_png(size_t width, size_t height,
 
     info = png_create_info_struct(png);
     RF_X(!info);
+
+    if (setjmp(png_jmpbuf(png))) {
+        exit(1);
+    }
 
     png_init_io(png, file);
 
